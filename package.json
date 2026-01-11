@@ -1,0 +1,37 @@
+{
+  "name": "mi-agente-lib",
+  "version": "1.0.0",
+  "description": "AI Agent Wrapper Library using Vercel AI SDK",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "typecheck": "tsc --noEmit"
+  },
+  "keywords": [
+    "ai",
+    "agent",
+    "gemini",
+    "vercel-ai-sdk"
+  ],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "dependencies": {
+    "@ai-sdk/google": "^3.0.6",
+    "@ai-sdk/openai": "^3.0.7",
+    "ai": "^6.0.27",
+    "dotenv": "^17.2.3",
+    "ioredis": "^5.9.1",
+    "mathjs": "^15.1.0",
+    "zod": "^4.3.5"
+  },
+  "devDependencies": {
+    "@types/ioredis": "^4.28.10",
+    "@types/node": "^25.0.6",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
