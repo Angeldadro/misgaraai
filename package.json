@@ -1,22 +1,29 @@
 {
-  "name": "mi-agente-lib",
+  "name": "@misgara/ai-agent",
   "version": "1.0.0",
-  "description": "AI Agent Wrapper Library using Vercel AI SDK",
+  "description": "Librería hexagonal para agentes de IA",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
     "dev": "tsx src/index.ts",
     "build": "tsc",
     "start": "node dist/index.js",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
   },
+  "files": [
+    "dist"
+  ],
   "keywords": [
     "ai",
     "agent",
     "gemini",
     "vercel-ai-sdk"
   ],
-  "author": "",
+  "publishConfig": {
+    "access": "public"
+  },
+  "author": "misgara",
   "license": "ISC",
   "type": "module",
   "dependencies": {
