@@ -117,9 +117,3 @@ El proyecto sigue principios de **Arquitectura Hexagonal**:
 - **Adaptadores**: Implementaciones concretas (`RedisMemory`, `GeminiProvider`).
 
 Esto permite cambiar la base de datos o el proveedor de IA sin tocar la lógica de negocio.
-
-## 📄 Licencia
-
-ISC
-```
----
