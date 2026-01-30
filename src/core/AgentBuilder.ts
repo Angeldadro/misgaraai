@@ -1,13 +1,8 @@
-// src/core/AgentBuilder.ts
 import { generateText, streamText, stepCountIs, type ModelMessage, type ToolSet, type LanguageModel, type StopCondition, type StreamTextResult } from 'ai';
-
 import { google } from '@ai-sdk/google';
 import { openai } from '@ai-sdk/openai';
+import { deepinfra } from '@ai-sdk/deepinfra';
 import type { IMemoryAdapter, AgentResult, StepInfo, ToolCallInfo, ToolResultInfo } from './types.js';
-
-// ... (existing code)
-
-
 
 // Model type definitions
 type GeminiModel = 'gemini-1.5-pro' | 'gemini-1.5-flash' | 'gemini-2.0-flash' | 'gemini-3-flash-preview';
@@ -18,12 +13,16 @@ type OpenAIModel =
     | 'o3' | 'o3-mini' | 'o3-pro'
     | 'o4-mini';
 
+type DeepSeekModel =
+    | 'deepseek-ai/DeepSeek-V3'
+    | 'deepseek-ai/DeepSeek-R1'
+    | 'deepseek-ai/DeepSeek-V3.2';
+
 /**
  * AgentBuilder - Fluent interface for building AI agents
  * Supports both Google Gemini and OpenAI models
  * 
  * @example
- * ```typescript
  * // Using Gemini
  * const agent = new AgentBuilder()
  *   .useGemini('gemini-3-flash-preview')
@@ -38,7 +37,6 @@ type OpenAIModel =
  * 
  * const result = await agent.run('Hello!');
  * console.log(result.text);
- * ```
  */
 export class AgentBuilder {
     private model: LanguageModel = google('gemini-3-flash-preview');
@@ -46,7 +44,7 @@ export class AgentBuilder {
     private tools: ToolSet = {};
     private memory?: IMemoryAdapter;
     private sessionId?: string;
-    private maxSteps = 1; // 1 = Single turn, >1 = Agent mode with tool loops
+    private maxSteps = 1;
     private temperature = 0.5;
     private maxOutputTokens?: number;
 
@@ -65,6 +63,15 @@ export class AgentBuilder {
      */
     useOpenAI(modelId: OpenAIModel): this {
         this.model = openai(modelId);
+        return this;
+    }
+
+    /**
+     * Sets a DeepSeek model via DeepInfra
+     * Uses DEEPINFRA_API_KEY from environment variables automatically
+     */
+    useDeepSeek(modelId: DeepSeekModel): this {
+        this.model = deepinfra(modelId);
         return this;
     }
 
@@ -140,6 +147,17 @@ export class AgentBuilder {
     }
 
     // --- PRIVATE HELPERS ---
+    private createUserMessage(userPrompt: string, imageUrl?: string): ModelMessage {
+        return {
+            role: 'user',
+            content: imageUrl
+                ? [
+                    { type: 'text', text: userPrompt },
+                    { type: 'image', image: imageUrl },
+                ]
+                : userPrompt,
+        };
+    }
 
     private formatStepResult(steps: Array<{
         text: string;
@@ -176,15 +194,7 @@ export class AgentBuilder {
         }
 
         // 2. Prepare Current Message (supports multimodal)
-        const currentMessage: ModelMessage = {
-            role: 'user',
-            content: imageUrl
-                ? [
-                    { type: 'text', text: userPrompt },
-                    { type: 'image', image: imageUrl },
-                ]
-                : userPrompt,
-        };
+        const currentMessage = this.createUserMessage(userPrompt, imageUrl);
 
         // 3. Call AI SDK with generateText
         // In v6, stopWhen with stepCountIs controls the multi-step behavior
@@ -224,15 +234,7 @@ export class AgentBuilder {
      * Runs the agent without saving to memory (stateless)
      */
     async runStateless(userPrompt: string, imageUrl?: string): Promise<AgentResult> {
-        const currentMessage: ModelMessage = {
-            role: 'user',
-            content: imageUrl
-                ? [
-                    { type: 'text', text: userPrompt },
-                    { type: 'image', image: imageUrl },
-                ]
-                : userPrompt,
-        };
+        const currentMessage = this.createUserMessage(userPrompt, imageUrl);
 
         const hasTools = Object.keys(this.tools).length > 0;
 
@@ -270,15 +272,7 @@ export class AgentBuilder {
         }
 
         // 2. Prepare Current Message
-        const currentMessage: ModelMessage = {
-            role: 'user',
-            content: imageUrl
-                ? [
-                    { type: 'text', text: userPrompt },
-                    { type: 'image', image: imageUrl },
-                ]
-                : userPrompt,
-        };
+        const currentMessage = this.createUserMessage(userPrompt, imageUrl);
 
         const hasTools = Object.keys(this.tools).length > 0;
 
@@ -309,15 +303,7 @@ export class AgentBuilder {
      * Stateless version of Streaming (no persistence)
      */
     async streamStateless(userPrompt: string, imageUrl?: string): Promise<StreamTextResult<ToolSet, any>> {
-        const currentMessage: ModelMessage = {
-            role: 'user',
-            content: imageUrl
-                ? [
-                    { type: 'text', text: userPrompt },
-                    { type: 'image', image: imageUrl },
-                ]
-                : userPrompt,
-        };
+        const currentMessage = this.createUserMessage(userPrompt, imageUrl);
 
         const hasTools = Object.keys(this.tools).length > 0;
 

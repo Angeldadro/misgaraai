@@ -1,4 +1,3 @@
-// src/infrastructure/RedisMemory.ts
 import { Redis } from 'ioredis';
 import type { ModelMessage } from 'ai';
 import type { IMemoryAdapter } from '../core/types.js';

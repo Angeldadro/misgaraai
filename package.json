@@ -5,11 +5,18 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
-    "dev": "tsx src/index.ts",
+    "dev": "tsx src/demo.ts",
     "build": "tsc",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
     "prepublishOnly": "npm run build"
+  },
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.js"
+    }
   },
   "files": [
     "dist"
@@ -27,6 +34,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@ai-sdk/deepinfra": "^2.0.26",
     "@ai-sdk/google": "^3.0.6",
     "@ai-sdk/openai": "^3.0.7",
     "ai": "^6.0.27",

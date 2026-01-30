@@ -29,3 +29,5 @@ repomix-output.html
 
 # Local brain artifacts (if stored in project)
 .gemini/
+.docs/*
+docs/

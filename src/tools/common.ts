@@ -29,7 +29,7 @@ export const CommonTools = {
         inputSchema: z.object({
             expression: z.string().describe('La expresión matemática a evaluar, ej: "2 + 2", "sqrt(16)", o "(10 * 5) / 2"'),
         }),
-        execute: async ({ expression }) => {
+        execute: async ({ expression }: { expression: string }) => {
             try {
                 // evaluate from mathjs is safer and more powerful
                 const result = evaluate(expression);
@@ -48,7 +48,7 @@ export const CommonTools = {
         inputSchema: z.object({
             query: z.string().describe('El término o frase a buscar'),
         }),
-        execute: async ({ query }) => {
+        execute: async ({ query }: { query: string }) => {
             console.log(`[🔍 Buscando en la web: ${query}]`);
             // Mock response - replace with actual search API (SerpAPI, Tavily, etc.)
             return JSON.stringify({
@@ -72,7 +72,7 @@ export const CommonTools = {
             min: z.number().describe('Valor mínimo (incluido)'),
             max: z.number().describe('Valor máximo (incluido)'),
         }),
-        execute: async ({ min, max }) => {
+        execute: async ({ min, max }: { min: number; max: number }) => {
             const result = Math.floor(Math.random() * (max - min + 1)) + min;
             return JSON.stringify({ min, max, result });
         },
@@ -88,7 +88,7 @@ export const CommonTools = {
             operation: z.enum(['wordCount', 'charCount', 'uppercase', 'lowercase', 'reverse'])
                 .describe('La operación a realizar'),
         }),
-        execute: async ({ text, operation }) => {
+        execute: async ({ text, operation }: { text: string; operation: string }) => {
             switch (operation) {
                 case 'wordCount':
                     return JSON.stringify({ operation, result: text.split(/\s+/).filter((w) => w.length > 0).length });
