@@ -14,13 +14,14 @@ type OpenAIModel =
     | 'o4-mini';
 
 type DeepSeekModel =
+    | 'deepseek-ai/DeepSeek-OCR'
     | 'deepseek-ai/DeepSeek-V3'
     | 'deepseek-ai/DeepSeek-R1'
     | 'deepseek-ai/DeepSeek-V3.2';
 
 /**
  * AgentBuilder - Fluent interface for building AI agents
- * Supports both Google Gemini and OpenAI models
+ * Supports Google Gemini, OpenAI, and DeepSeek models
  * 
  * @example
  * // Using Gemini
@@ -73,6 +74,13 @@ export class AgentBuilder {
     useDeepSeek(modelId: DeepSeekModel): this {
         this.model = deepinfra(modelId);
         return this;
+    }
+
+    /**
+     * Shortcut for DeepSeek OCR model via DeepInfra
+     */
+    useDeepSeekOCR(): this {
+        return this.useDeepSeek('deepseek-ai/DeepSeek-OCR');
     }
 
     /**

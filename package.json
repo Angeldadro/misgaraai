@@ -1,15 +1,19 @@
 {
   "name": "@misgara/ai-agent",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Librería hexagonal para agentes de IA",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
+    "clean": "node -e \"require('fs').rmSync('dist',{recursive:true,force:true})\"",
     "dev": "tsx src/demo.ts",
+    "demo:media": "tsx src/demo-media.ts",
     "build": "tsc",
+    "check:package": "npm pack --dry-run",
+    "release:verify": "npm run clean && npm run typecheck && npm run build && npm run check:package",
     "start": "node dist/index.js",
     "typecheck": "tsc --noEmit",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run release:verify"
   },
   "exports": {
     ".": {
@@ -21,10 +25,18 @@
   "files": [
     "dist"
   ],
+  "sideEffects": false,
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "keywords": [
     "ai",
     "agent",
     "gemini",
+    "openai",
+    "whisper",
+    "deepseek",
+    "ocr",
     "vercel-ai-sdk"
   ],
   "publishConfig": {

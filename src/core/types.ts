@@ -65,3 +65,38 @@ export interface AgentResult {
     /** Total usage across all steps */
     totalUsage: LanguageModelUsage;
 }
+
+/**
+ * Shared binary/text input format used by OCR and audio transcription.
+ */
+export type MediaInput = string | URL | Uint8Array | ArrayBuffer | Buffer;
+
+/**
+ * OCR extraction result.
+ */
+export interface OCRResult {
+    /** Extracted text from the input image */
+    text: string;
+    /** Token usage statistics */
+    usage: {
+        inputTokens: number | undefined;
+        outputTokens: number | undefined;
+        totalTokens: number | undefined;
+    };
+    /** Total usage across the OCR call */
+    totalUsage: LanguageModelUsage;
+}
+
+/**
+ * Audio transcription result (Whisper/OpenAI Transcription API).
+ */
+export interface AudioTranscriptionResult {
+    text: string;
+    segments: Array<{
+        text: string;
+        startSecond: number;
+        endSecond: number;
+    }>;
+    language: string | undefined;
+    durationInSeconds: number | undefined;
+}

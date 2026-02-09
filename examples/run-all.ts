@@ -18,6 +18,7 @@ const examples = [
     '08-openai-with-tools.ts',
     '09-bleeding-edge-models.ts',
     '10-streaming.ts',
+    '11-media-ocr-whisper.ts',
 ];
 
 async function runExample(file: string): Promise<void> {

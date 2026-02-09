@@ -32,6 +32,7 @@ Asegúrate de configurar tus variables de entorno en un archivo `.env`:
 ```env
 GOOGLE_GENERATIVE_AI_API_KEY=tu_clave_aqui
 OPENAI_API_KEY=tu_clave_aqui
+DEEPINFRA_API_KEY=tu_clave_aqui
 REDIS_URL=redis://localhost:6379
 ```
 
@@ -70,6 +71,27 @@ console.log(res.text);
 
 ```
 
+
+### 3. OCR (DeepSeek) + Audio a Texto (Whisper)
+
+```typescript
+import { MediaBuilder } from '@misgara/ai-agent';
+
+const media = new MediaBuilder()
+    .useDeepSeekOCR('deepseek-ai/DeepSeek-OCR')
+    .useOpenAIWhisper('whisper-1');
+
+const ocr = await media.extractTextFromImage(
+    'https://example.com/factura.png'
+);
+console.log(ocr.text);
+
+const audio = await media.transcribeAudio(
+    'https://example.com/audio.wav'
+);
+console.log(audio.text);
+```
+
 ## 🛠 Creación de Tools Personalizadas
 
 Puedes conectar el agente a tu lógica de negocio (bases de datos, APIs externas) fácilmente:
@@ -101,6 +123,7 @@ El repositorio incluye una carpeta `examples/` con casos de uso detallados:
 - `04-custom-tools.ts`: E-commerce simulado.
 - `05-multi-step-agent.ts`: Resolución de problemas complejos.
 - `10-streaming.ts`: Respuestas en tiempo real.
+- `11-media-ocr-whisper.ts`: OCR con DeepSeek y transcripcion con Whisper.
 
 Para correr los ejemplos:
 
@@ -108,12 +131,41 @@ Para correr los ejemplos:
 npx tsx examples/run-all.ts
 ```
 
+Demo directo de OCR + Whisper:
+
+```bash
+npm run demo:media
+```
+
+Nota: el demo acepta URLs remotas para imagen/audio y la libreria ahora las normaliza internamente.
+
+Opcionalmente puedes pasar tus propias URLs:
+
+```bash
+npm run demo:media -- "https://tu-sitio.com/imagen.png" "https://tu-sitio.com/audio.wav"
+```
+
 ## 🏗 Arquitectura
 
 El proyecto sigue principios de **Arquitectura Hexagonal**:
 
-- **Core**: Lógica del agente (`AgentBuilder`).
+- **Core**: Logica del agente (`AgentBuilder`) y tareas de media (`MediaBuilder`).
 - **Puertos**: Interfaces como `IMemoryAdapter`.
 - **Adaptadores**: Implementaciones concretas (`RedisMemory`, `GeminiProvider`).
 
 Esto permite cambiar la base de datos o el proveedor de IA sin tocar la lógica de negocio.
+
+## Produccion y Publicacion
+
+Antes de publicar en npm:
+
+```bash
+npm run release:verify
+```
+
+Este comando ejecuta:
+
+- `clean`
+- `typecheck`
+- `build`
+- `npm pack --dry-run` (verifica el contenido real del paquete)
